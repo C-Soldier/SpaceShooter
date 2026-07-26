@@ -10,7 +10,8 @@ background = "Assets/background.png"
 player_pos = pygame.Vector2(screen_width / 2, screen_height / 2)
 player_ship = "Assets/player_ship.png"
 
-asteroids = ("Assets/big_asteroid.png", "Assets/asteroid_01.png", "Assets/asteroid_02.png", "Assets/asteroid_03.png", "Assets/asteroid_04.png")
+asteroids = ("Assets/Asteroids/big_asteroid.png", "Assets/Asteroids/asteroid_01.png", "Assets/Asteroids/asteroid_02.png", "Assets/Asteroids/asteroid_03.png", "Assets/Asteroids/asteroid_04.png")
+asteroids_group = pygame.sprite.Group()
 
 pygame.init()
 
@@ -21,8 +22,21 @@ running = True
 dt = 0
 
 # Functions
-def incoming_asteroids(asteroids, screen):
-    asteroid = random.choice(asteroids)
+class Asteroids(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        asteroid_size = random.randint(30,80)
+        super().__init__()
+        self.image = pygame.transform.scale(pygame.image.load(random.choice(asteroids)).convert_alpha(), (asteroid_size, asteroid_size))
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        
+    def update(self):
+        pass
+
+def incoming_asteroids(asteroids_sprites, screen):
+    asteroids = pygame.sprite.Group()
+    
+    asteroids.add(asteroids_sprites)
     asteroid_size = random.randint(30, 80)
     
     asteroid = pygame.transform.scale(pygame.image.load(asteroid).convert_alpha(), (asteroid_size, asteroid_size))
@@ -36,6 +50,9 @@ background = pygame.transform.scale(pygame.image.load(background).convert(), (sc
 player = pygame.transform.scale(pygame.image.load(player_ship).convert_alpha(), (64, 64))
 
         
+for i in range(10):
+    asteroid = Asteroids(random.randint(1, 1279), 0)
+    asteroids_group.add(asteroid)
 
 while running:
     # poll for events
@@ -63,7 +80,10 @@ while running:
     if keys[pygame.K_d]:
         player_pos.x += 300 * dt
 
-    incoming_asteroids(asteroids, screen)
+    # incoming_asteroids(asteroids, screen)
+    
+    asteroids_group.update()
+    asteroids_group.draw(screen)
     
     # flip() the display to put your work on screen
     pygame.display.flip()
