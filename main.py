@@ -1,6 +1,8 @@
 import pygame
 import random
-from time import sleep
+
+
+pygame.init()
 
 # Variables for the game assets
 screen_width = 1280
@@ -16,8 +18,6 @@ asteroid_event = pygame.USEREVENT + 1
 pygame.time.set_timer(asteroid_event, 1000)
 max_asteroids = 5
 
-pygame.init()
-
 # Varibles for the game itself
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
@@ -26,27 +26,21 @@ dt = 0
 
 # Functions
 class Asteroids(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, sprite, x, y):
         asteroid_size = random.randint(30,80)
         super().__init__()
-        self.image = pygame.transform.scale(pygame.image.load(random.choice(asteroids)).convert_alpha(), (asteroid_size, asteroid_size))
+        self.image = pygame.transform.scale(pygame.image.load(sprite).convert_alpha(), (asteroid_size, asteroid_size))
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         
+        self.speed_y = random.choices((2, 6), weights=(75, 25), k=1)[0]
+        
     def update(self):
-        pass
+        self.rect.y += self.speed_y
+        
+        if self.rect.top > screen_height:
+            self.kill()
 
-def incoming_asteroids(asteroids_sprites, screen):
-    asteroids = pygame.sprite.Group()
-    
-    asteroids.add(asteroids_sprites)
-    asteroid_size = random.randint(30, 80)
-    
-    asteroid = pygame.transform.scale(pygame.image.load(asteroid).convert_alpha(), (asteroid_size, asteroid_size))
-    
-    sleep(2)
-    
-    return screen.blit(asteroid, (random.randint(1, 1279), 0))
 
 # Load background and player ship images
 background = pygame.transform.scale(pygame.image.load(background).convert(), (screen_width, screen_height)) # Load and scale the background image to fit the screen size
@@ -62,7 +56,7 @@ while running:
         
         if event.type == asteroid_event:
             if len(asteroids_group) < max_asteroids:
-                asteroid = Asteroids(random.randint(1, 1279), 0)
+                asteroid = Asteroids(random.choice(asteroids), random.randint(0, 1270), 0)
                 asteroids_group.add(asteroid)
 
     # fill the screen with a color to wipe away anything from last frame
