@@ -1,6 +1,6 @@
 import pygame
 import random
-import time
+from time import sleep
 
 # Variables for the game assets
 screen_width = 1280
@@ -12,6 +12,9 @@ player_ship = "Assets/player_ship.png"
 
 asteroids = ("Assets/Asteroids/big_asteroid.png", "Assets/Asteroids/asteroid_01.png", "Assets/Asteroids/asteroid_02.png", "Assets/Asteroids/asteroid_03.png", "Assets/Asteroids/asteroid_04.png")
 asteroids_group = pygame.sprite.Group()
+asteroid_event = pygame.USEREVENT + 1
+pygame.time.set_timer(asteroid_event, 1000)
+max_asteroids = 5
 
 pygame.init()
 
@@ -41,7 +44,7 @@ def incoming_asteroids(asteroids_sprites, screen):
     
     asteroid = pygame.transform.scale(pygame.image.load(asteroid).convert_alpha(), (asteroid_size, asteroid_size))
     
-    time.sleep(2)
+    sleep(2)
     
     return screen.blit(asteroid, (random.randint(1, 1279), 0))
 
@@ -49,10 +52,6 @@ def incoming_asteroids(asteroids_sprites, screen):
 background = pygame.transform.scale(pygame.image.load(background).convert(), (screen_width, screen_height)) # Load and scale the background image to fit the screen size
 player = pygame.transform.scale(pygame.image.load(player_ship).convert_alpha(), (64, 64))
 
-        
-for i in range(10):
-    asteroid = Asteroids(random.randint(1, 1279), 0)
-    asteroids_group.add(asteroid)
 
 while running:
     # poll for events
@@ -60,6 +59,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        
+        if event.type == asteroid_event:
+            if len(asteroids_group) < max_asteroids:
+                asteroid = Asteroids(random.randint(1, 1279), 0)
+                asteroids_group.add(asteroid)
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
