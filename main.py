@@ -25,7 +25,7 @@ running = True
 dt = 0
 
 # Functions
-class Asteroids(pygame.sprite.Sprite):
+class Sprites(pygame.sprite.Sprite):
     def __init__(self, sprite, x, y):
         asteroid_size = random.randint(30,80)
         super().__init__()
@@ -56,7 +56,7 @@ while running:
         
         if event.type == asteroid_event:
             if len(asteroids_group) < max_asteroids:
-                asteroid = Asteroids(random.choice(asteroids), random.randint(0, 1270), 0)
+                asteroid = Sprites(random.choice(asteroids), random.randint(0, 1270), 0)
                 asteroids_group.add(asteroid)
 
     # fill the screen with a color to wipe away anything from last frame
