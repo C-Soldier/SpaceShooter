@@ -39,6 +39,10 @@ class Sprites(pygame.sprite.Sprite):
         self.speed_x = speed_x
         self.speed_y = speed_y
 
+class Player(Sprites):
+    def __init__(self, sprite, x_cord = 0, y_cord = 0, size = None, speed_x = 0, speed_y = 0):
+        super().__init__(sprite, x_cord, y_cord, size, speed_x, speed_y)
+
 class Asteroids(Sprites): 
     def update(self):
         self.rect.x += self.speed_x
