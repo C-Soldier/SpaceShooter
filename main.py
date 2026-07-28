@@ -38,7 +38,8 @@ class Sprites(pygame.sprite.Sprite):
         
         self.speed_x = speed_x
         self.speed_y = speed_y
-        
+
+class Asteroids(Sprites): 
     def update(self):
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
@@ -62,7 +63,7 @@ while running:
         
         if event.type == asteroid_event:
             if len(asteroids_group) < max_asteroids:
-                asteroid = Sprites(random.choice(asteroids), x_cord=random.randint(0, 1270), y_cord=0, size=asteroid_size, speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0])
+                asteroid = Asteroids(random.choice(asteroids), x_cord=random.randint(0, 1270), y_cord=0, size=asteroid_size, speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0])
                 asteroids_group.add(asteroid)
 
     # fill the screen with a color to wipe away anything from last frame
