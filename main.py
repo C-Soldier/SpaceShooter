@@ -26,16 +26,21 @@ dt = 0
 
 # Functions
 class Sprites(pygame.sprite.Sprite):
-    def __init__(self, sprite, x, y):
-        asteroid_size = random.randint(30,80)
+    def __init__(self, sprite, x_cord: int=0, y_cord: int=0, size: tuple=None, speed_x: int=0, speed_y: int=0):
         super().__init__()
-        self.image = pygame.transform.scale(pygame.image.load(sprite).convert_alpha(), (asteroid_size, asteroid_size))
+        raw_sprite = pygame.image.load(sprite).convert_alpha()
+        if size == None:
+            self.image = raw_sprite
+        elif size != None:
+            self.image = pygame.transform.scale(raw_sprite, (size, size))
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect.topleft = (x_cord, y_cord)
         
-        self.speed_y = random.choices((2, 6), weights=(75, 25), k=1)[0]
+        self.speed_x = speed_x
+        self.speed_y = speed_y
         
     def update(self):
+        self.rect.x += self.speed_x
         self.rect.y += self.speed_y
         
         if self.rect.top > screen_height:
@@ -48,6 +53,7 @@ player = pygame.transform.scale(pygame.image.load(player_ship).convert_alpha(), 
 
 
 while running:
+    asteroid_size = random.randint(30,80)
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
@@ -56,7 +62,7 @@ while running:
         
         if event.type == asteroid_event:
             if len(asteroids_group) < max_asteroids:
-                asteroid = Sprites(random.choice(asteroids), random.randint(0, 1270), 0)
+                asteroid = Sprites(random.choice(asteroids), x_cord=random.randint(0, 1270), y_cord=0, size=asteroid_size, speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0])
                 asteroids_group.add(asteroid)
 
     # fill the screen with a color to wipe away anything from last frame
