@@ -40,12 +40,15 @@ class Sprites(pygame.sprite.Sprite):
         self.speed_y = speed_y
 
 class Player(Sprites):
-    def __init__(self, sprite, x_cord = 0, y_cord = 0, size = None, speed_x = 0, speed_y = 0):
+    def __init__(self, sprite, x_cord = 0, y_cord = 0, size = None, speed_x = 0, speed_y = 0, enemy=None):
         super().__init__(sprite, x_cord, y_cord, size, speed_x, speed_y)
+        
+        player_damaged = pygame.sprite.spritecollide(self, enemy, True)
         
     def update(self):
         keys = pygame.key.get_pressed()
-        
+
+        # Player's Movement
         if keys[pygame.K_w]:
             self.rect.y -= self.speed_y * dt
         if keys[pygame.K_s]:
@@ -55,6 +58,15 @@ class Player(Sprites):
         if keys[pygame.K_d]:
             self.rect.x += self.speed_x * dt
 
+        # Keep the player inside the screen bounds
+        self.rect.left = max(0, self.rect.left)
+        self.rect.right = min(screen_width, self.rect.right)
+        self.rect.top = max(0, self.rect.top)
+        self.rect.bottom = min(screen_height, self.rect.bottom)
+
+        # Check Collison
+        
+        
 class Asteroids(Sprites): 
     def update(self):
         self.rect.x += self.speed_x
@@ -82,7 +94,12 @@ while running:
             if len(sprites) < max_asteroids:
                 asteroid = Asteroids(random.choice(asteroids), x_cord=random.randint(0, 1270), y_cord=0, size=asteroid_size, speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0])
                 sprites.add(asteroid)
-
+    
+    player_damaged = pygame.sprite.spritecollide(player, asteroid, True)
+    
+    for damage in player_damaged:
+        print("got hit")
+          
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
 

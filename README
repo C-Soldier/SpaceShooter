@@ -1,0 +1,23 @@
+# What's Happening
+## Main File
+### Lines 60-63 (From Github Copilot):
+Those four lines are in the player movement update in main.py:53-63. They are a boundary check, also called “clamping.”
+
+max(0, ...) means “don’t go less than 0”
+min(screen_width, ...) means “don’t go past the screen width”
+same for top/bottom with screen_height
+So this code is basically saying:
+
+left edge can’t be negative
+right edge can’t pass the screen width
+top edge can’t be negative
+bottom edge can’t pass the screen height
+It keeps the ship inside the window at all times.
+
+Example
+If the player tries to move left to -20, this happens:
+
+self.rect.left = max(0, -20) → becomes 0
+So the player gets pushed back to the edge instead of disappearing off-screen.
+
+That’s it. It’s just a “stay inside the screen bounds” check.
