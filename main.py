@@ -43,8 +43,6 @@ class Player(Sprites):
     def __init__(self, sprite, x_cord = 0, y_cord = 0, size = None, speed_x = 0, speed_y = 0, enemy=None):
         super().__init__(sprite, x_cord, y_cord, size, speed_x, speed_y)
         
-        player_damaged = pygame.sprite.spritecollide(self, enemy, True)
-        
     def update(self):
         keys = pygame.key.get_pressed()
 
@@ -95,10 +93,10 @@ while running:
                 asteroid = Asteroids(random.choice(asteroids), x_cord=random.randint(0, 1270), y_cord=0, size=asteroid_size, speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0])
                 sprites.add(asteroid)
     
-    player_damaged = pygame.sprite.spritecollide(player, asteroid, True)
+    """player_damaged = pygame.sprite.spritecollide(player, asteroid, True)
     
     for damage in player_damaged:
-        print("got hit")
+        print("got hit")"""
           
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
