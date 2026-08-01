@@ -4,7 +4,7 @@ import random
 
 pygame.init()
 
-# Variables for the game assets
+# Variables for the game
 screen_width = 1280
 screen_height = 720
 background = "Assets/background.png"
@@ -14,6 +14,7 @@ player_ship = "Assets/player_ship.png"
 
 asteroids = ("Assets/Asteroids/big_asteroid.png", "Assets/Asteroids/asteroid_01.png", "Assets/Asteroids/asteroid_02.png", "Assets/Asteroids/asteroid_03.png", "Assets/Asteroids/asteroid_04.png")
 sprites = pygame.sprite.Group()
+asteroid_group = pygame.sprite.Group()
 asteroid_event = pygame.USEREVENT + 1
 pygame.time.set_timer(asteroid_event, 1000)
 max_asteroids = 5
@@ -40,7 +41,7 @@ class Sprites(pygame.sprite.Sprite):
         self.speed_y = speed_y
 
 class Player(Sprites):
-    def __init__(self, sprite, x_cord = 0, y_cord = 0, size = None, speed_x = 0, speed_y = 0, enemy=None):
+    def __init__(self, sprite, x_cord = 0, y_cord = 0, size = None, speed_x = 0, speed_y = 0):
         super().__init__(sprite, x_cord, y_cord, size, speed_x, speed_y)
         
     def update(self):
@@ -61,8 +62,6 @@ class Player(Sprites):
         self.rect.right = min(screen_width, self.rect.right)
         self.rect.top = max(0, self.rect.top)
         self.rect.bottom = min(screen_height, self.rect.bottom)
-
-        # Check Collison
         
         
 class Asteroids(Sprites): 
@@ -89,14 +88,13 @@ while running:
             running = False
         
         if event.type == asteroid_event:
-            if len(sprites) < max_asteroids:
+            if len(asteroid_group) < max_asteroids:
                 asteroid = Asteroids(random.choice(asteroids), x_cord=random.randint(0, 1270), y_cord=0, size=asteroid_size, speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0])
                 sprites.add(asteroid)
-    
-    """player_damaged = pygame.sprite.spritecollide(player, asteroid, True)
-    
-    for damage in player_damaged:
-        print("got hit")"""
+                asteroid_group.add(asteroid)
+                
+                if pygame.sprite.spritecollide(player, asteroid_group, True):
+                    print("got hit")
           
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
