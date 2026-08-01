@@ -10,7 +10,8 @@ screen_height = 720
 background = "Assets/background.png"
 
 player_pos = pygame.Vector2(screen_width / 2, screen_height / 2)
-player_ship = "Assets/player_ship.png"
+player_ship = "Assets/Player/player_ship.png"
+player_projectile = "Assets\Player\player_projectile_1.png"
 
 asteroids = ("Assets/Asteroids/big_asteroid.png", "Assets/Asteroids/asteroid_01.png", "Assets/Asteroids/asteroid_02.png", "Assets/Asteroids/asteroid_03.png", "Assets/Asteroids/asteroid_04.png")
 sprites = pygame.sprite.Group()
