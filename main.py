@@ -30,7 +30,6 @@ max_asteroids = 10
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 running = True
-dt = 0
 
 # Functions
 class Sprites(pygame.sprite.Sprite):
@@ -93,24 +92,27 @@ def shoot_player_projectile():
         projectile_group.add(player_projectile)
         sprites.add(player_projectile)
 
-    if pygame.sprite.spritecollide(player_projectile, asteroid_group, True):
-        print("Bye")
-    
-
-
-class Asteroids(Sprites): 
+class Asteroids(Sprites):
     def update(self):
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
-        
-        if self.rect.top > screen_height:
+
+        if (self.rect.top > screen_height
+            or self.rect.right < -screen_width
+            or self.rect.left > screen_width):
             self.kill()
 
 
 # Load background and player ship
 background = pygame.transform.scale(pygame.image.load(background).convert(), (screen_width, screen_height)) # Load and scale the background image to fit the screen size
 
-player = Player(player_ship, x_cord=player_pos.x, y_cord=player_pos.y, size=player_ship_size, speed_x=300, speed_y=300)
+player = Player(player_ship, 
+                x_cord=player_pos.x, 
+                y_cord=player_pos.y, 
+                size=player_ship_size, 
+                speed_x=300, 
+                speed_y=300
+                )
 sprites.add(player)
 
 while running:
@@ -124,7 +126,14 @@ while running:
         
         if event.type == asteroid_event:
             if len(asteroid_group) < max_asteroids:
-                asteroid = Asteroids(random.choice(asteroids), x_cord=random.randint(0, 1270), y_cord=0, size=(asteroid_size, asteroid_size), speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0])
+                asteroid = Asteroids(
+                    random.choice(asteroids),
+                    x_cord=random.randint(0, 1270),
+                    y_cord=0,
+                    size=(asteroid_size, asteroid_size),
+                    speed_x=random.choice((-1, 1)),
+                    speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0],
+                )
                 asteroid_group.add(asteroid)
                 sprites.add(asteroid)
                 
@@ -136,13 +145,13 @@ while running:
     screen.blit(background)
 
     shoot_player_projectile()
-        
-    """if pygame.sprite.spritecollide(player_projectile, asteroid_group, True):
-            print("Bye Asteroid")"""
-    
+
+    # Destroy asteroids when a player projectile hits them.
+    pygame.sprite.groupcollide(projectile_group, asteroid_group, True, True)
+
     if pygame.sprite.spritecollide(player, asteroid_group, True):
         print("got hit")
-    
+
     sprites.update()
 
     sprites.draw(screen)
