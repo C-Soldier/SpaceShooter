@@ -1,4 +1,5 @@
 import pygame
+import sys
 import random
 
 
@@ -15,7 +16,7 @@ player_ship = "Assets/Player/player_ship.png"
 player_ship_size = (64, 64)
 
 player_projectile_sprite = "Assets\Player\player_projectile_1.png"
-player_projectile_size = (8, 32)
+player_projectile_size = (player_ship_size[0] / 8, player_ship_size[1] / 2)
 projectile_group = pygame.sprite.Group()
 
 asteroids = ("Assets/Asteroids/big_asteroid.png", "Assets/Asteroids/asteroid_01.png", "Assets/Asteroids/asteroid_02.png", "Assets/Asteroids/asteroid_03.png", "Assets/Asteroids/asteroid_04.png")
@@ -68,26 +69,33 @@ class Player(Sprites):
         self.rect.top = max(0, self.rect.top)
         self.rect.bottom = min(screen_height, self.rect.bottom)
         
-class PlayerProjectile(Sprites):
+class PlayerProjectile(Sprites):        
     def update(self):
         # Move the projectile upward each frame.
         self.rect.y -= self.speed_y
 
-        # Remove the projectile once it leaves any side of the screen.
+        # Remove the projectile once it leaves top side of the screen.
         if self.rect.bottom < 0:
             self.kill()
     
 def shoot_player_projectile():
-    player_projectile = PlayerProjectile(
-        player_projectile_sprite,
-        x_cord=player.rect.centerx,
-        y_cord=player.rect.top,
-        size=player_projectile_size,
-        speed_x=0,
-        speed_y=10,
-    )
-    sprites.add(player_projectile)
-    projectile_group.add(player_projectile)
+    mouse = pygame.mouse.get_just_pressed()
+    
+    if mouse[0]:
+        player_projectile = PlayerProjectile(
+            player_projectile_sprite,
+            x_cord=player.rect.centerx,
+            y_cord=player.rect.top,
+            size=player_projectile_size,
+            speed_x=0,
+            speed_y=10,
+        )
+        projectile_group.add(player_projectile)
+        sprites.add(player_projectile)
+
+    if pygame.sprite.spritecollide(player_projectile, asteroid_group, True):
+        print("Bye")
+    
 
 
 class Asteroids(Sprites): 
@@ -127,13 +135,10 @@ while running:
     # RENDER YOUR GAME HERE
     screen.blit(background)
 
-    if mouse[0]:
-        player_projectile = PlayerProjectile(player_projectile_sprite, x_cord=player.rect.centerx, y_cord=player.rect.top, size=player_projectile_size, speed_x=0, speed_y=10)
-        projectile_group.add(player_projectile)
-        sprites.add(player_projectile)
+    shoot_player_projectile()
         
-        if pygame.sprite.spritecollide(player_projectile, asteroid_group, True):
-            print("Bye Asteroid")
+    """if pygame.sprite.spritecollide(player_projectile, asteroid_group, True):
+            print("Bye Asteroid")"""
     
     if pygame.sprite.spritecollide(player, asteroid_group, True):
         print("got hit")
@@ -148,3 +153,4 @@ while running:
     dt = clock.tick(60) / 1000  # Limit the game to 60 frames per second and store the elapsed time in seconds
 
 pygame.quit()
+sys.exit()
