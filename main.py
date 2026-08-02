@@ -48,8 +48,9 @@ class Sprites(pygame.sprite.Sprite):
         self.angle = angle
 
 class Player(Sprites):
-    def __init__(self, sprite, x_cord = 0, y_cord = 0, size = None, speed_x = 0, speed_y = 0):
-        super().__init__(sprite, x_cord, y_cord, size, speed_x, speed_y)
+    def __init__(self, sprite, x_cord=0, y_cord=0, size=None, speed_x=0, speed_y=0, angle=0):
+        super().__init__(sprite, x_cord, y_cord, size, speed_x, speed_y, angle)
+        self.original_image = self.image.copy()
         
     def update(self):
         keys = pygame.key.get_pressed()
@@ -64,13 +65,19 @@ class Player(Sprites):
         if keys[pygame.K_d]:
             self.rect.x += self.speed_x * dt
         
+        # Lets the player ship always face the cursor (got it from google T~T)
+        direction = pygame.math.Vector2(pygame.mouse.get_pos()) - self.rect.center
+        angle = direction.angle_to((0, -1))
+        self.image = pygame.transform.rotate(self.original_image, angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+        
         # Keep the player inside the screen bounds
         self.rect.left = max(0, self.rect.left)
         self.rect.right = min(screen_width, self.rect.right)
         self.rect.top = max(0, self.rect.top)
         self.rect.bottom = min(screen_height, self.rect.bottom)
         
-class PlayerProjectile(Sprites):        
+class PlayerProjectile(Sprites):       
     def update(self):
         # Move the projectile each frame.
         self.rect.y -= self.speed_y
