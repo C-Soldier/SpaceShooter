@@ -30,6 +30,7 @@ max_asteroids = 10
 screen = pygame.display.set_mode((screen_width, screen_height))
 clock = pygame.time.Clock()
 running = True
+dt = 0
 
 # Functions
 class Sprites(pygame.sprite.Sprite):
@@ -71,9 +72,9 @@ class Player(Sprites):
         
 class PlayerProjectile(Sprites):        
     def update(self):
-        # Move the projectile upward each frame.
+        # Move the projectile each frame.
         self.rect.y -= self.speed_y
-
+        
         # Remove the projectile once it leaves top side of the screen.
         if self.rect.bottom < 0:
             self.kill()
@@ -94,9 +95,18 @@ def shoot_player_projectile():
         sprites.add(player_projectile)
 
 class Asteroids(Sprites):
+    def __init__(self, sprite, x_cord=0, y_cord=0, size=None, speed_x=0, speed_y=0, angle=0):
+        super().__init__(sprite, x_cord, y_cord, size, speed_x, speed_y, angle)
+        self.original_image = self.image.copy()
+        self.rotation_speed = random.uniform(-2, 2)
+
     def update(self):
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
+
+        self.angle = (self.angle + self.rotation_speed) % 360
+        self.image = pygame.transform.rotate(self.original_image, self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
 
         if (self.rect.top > screen_height
             or self.rect.right < -screen_width
@@ -134,6 +144,7 @@ while running:
                     size=(asteroid_size, asteroid_size),
                     speed_x=random.choice((-1, 0, 1)),
                     speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0],
+                    angle=-1
                 )
                 asteroid_group.add(asteroid)
                 sprites.add(asteroid)
