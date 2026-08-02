@@ -132,7 +132,7 @@ while running:
                     x_cord=random.randint(0, 1270),
                     y_cord=0,
                     size=(asteroid_size, asteroid_size),
-                    speed_x=random.choice((-1, 1)),
+                    speed_x=random.choice((-1, 0, 1)),
                     speed_y=random.choices((2, 6), weights=(75, 25), k=1)[0],
                 )
                 asteroid_group.add(asteroid)
