@@ -1,6 +1,6 @@
 # What's Happening
 ## Main File
-### Lines 60-63 (From Github Copilot):
+### Lines 68-71 (From Github Copilot):
 Those four lines are in the player movement update in main.py:53-63. They are a boundary check, also called “clamping.”
 
 max(0, ...) means “don’t go less than 0”
@@ -21,3 +21,31 @@ self.rect.left = max(0, -20) → becomes 0
 So the player gets pushed back to the edge instead of disappearing off-screen.
 
 That’s it. It’s just a “stay inside the screen bounds” check.
+
+### Lines 100 and 107-109 (From Github Copilot):
+In main.py:100, this line:
+
+self.original_image = self.image.copy()
+stores a clean copy of the asteroid sprite before any rotation happens.
+
+This is important because rotating an already-rotated image over and over would cause the image to get worse each frame and can make it blurry or distorted. By keeping the original image saved, the code can rotate from the base sprite every time.
+
+In main.py:107-109, this block:
+
+self.angle = (self.angle + self.rotation_speed) % 360
+self.image = pygame.transform.rotate(self.original_image, self.angle)
+self.rect = self.image.get_rect(center=self.rect.center)
+works together like this:
+
+self.angle = ... % 360
+
+Adds a small random rotation amount to the asteroid’s current angle.
+% 360 keeps the angle within a 0–359 degree range so it doesn’t grow forever.
+pygame.transform.rotate(self.original_image, self.angle)
+
+Rotates the saved original sprite to the new angle.
+self.rect = self.image.get_rect(center=self.rect.center)
+
+Recalculates the hitbox rectangle after rotation.
+A rotated image changes size and shape, so the rect must be updated to match the new image while keeping the same center point.
+So the asteroid spins smoothly while staying centered and keeping a correct collision box.
