@@ -33,7 +33,7 @@ running = True
 
 # Functions
 class Sprites(pygame.sprite.Sprite):
-    def __init__(self, sprite, x_cord: int=0, y_cord: int=0, size: tuple=None, speed_x: int=0, speed_y: int=0):
+    def __init__(self, sprite, x_cord: int=0, y_cord: int=0, size: tuple=None, speed_x: int=0, speed_y: int=0, angle: float=0):
         super().__init__()
         raw_sprite = pygame.image.load(sprite).convert_alpha()
         if size == None:
@@ -44,6 +44,7 @@ class Sprites(pygame.sprite.Sprite):
         
         self.speed_x = speed_x
         self.speed_y = speed_y
+        self.angle = angle
 
 class Player(Sprites):
     def __init__(self, sprite, x_cord = 0, y_cord = 0, size = None, speed_x = 0, speed_y = 0):
