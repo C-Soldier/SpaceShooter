@@ -65,12 +65,6 @@ class Player(Sprites):
         if keys[pygame.K_d]:
             self.rect.x += self.speed_x * dt
         
-        # Lets the player ship always face the cursor
-        direction = pygame.math.Vector2(pygame.mouse.get_pos()) - self.rect.center
-        angle = direction.angle_to((0, -1))
-        self.image = pygame.transform.rotate(self.original_image, angle)
-        self.rect = self.image.get_rect(center=self.rect.center)
-        
         # Keep the player inside the screen bounds
         self.rect.left = max(0, self.rect.left)
         self.rect.right = min(screen_width, self.rect.right)
