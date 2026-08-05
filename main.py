@@ -6,7 +6,7 @@ import random
 pygame.init()
 
 # Variables for the game
-screen_width = 1280
+screen_width = 400
 screen_height = 720
 background = "Assets/background.png"
 sprites = pygame.sprite.Group()
@@ -140,7 +140,7 @@ while running:
             if len(asteroid_group) < max_asteroids:
                 asteroid = Asteroids(
                     random.choice(asteroids),
-                    x_cord=random.randint(0, 1270),
+                    x_cord=random.randint(0, (screen_width - 10)),
                     y_cord=0,
                     size=(asteroid_size, asteroid_size),
                     speed_x=random.choice((-1, 0, 1)),
