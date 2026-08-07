@@ -79,7 +79,7 @@ class PlayerProjectile(Sprites):
         # Remove the projectile once it leaves top side of the screen.
         if self.rect.bottom < 0:
             self.kill()
-    
+
 def shoot_player_projectile():
     mouse = pygame.mouse.get_just_pressed()
     
@@ -149,7 +149,8 @@ while running:
                 )
                 asteroid_group.add(asteroid)
                 sprites.add(asteroid)
-                
+    
+    dt = clock.tick(60) / 1000  # Limit the game to 60 frames per second and store the elapsed time in seconds            
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("black")
@@ -171,8 +172,6 @@ while running:
     
     # flip() the display to put your work on screen
     pygame.display.flip()
-
-    dt = clock.tick(60) / 1000  # Limit the game to 60 frames per second and store the elapsed time in seconds
 
 pygame.quit()
 sys.exit()
