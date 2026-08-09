@@ -37,7 +37,7 @@ class Particles(pygame.sprite.Sprite):
         self.image.set_alpha(self.alpha)
         
         if self.alpha <= 0:
-            self.kill
+            self.kill()
     
     def update(self, dt):
         self.move_particles(dt)

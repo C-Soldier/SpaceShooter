@@ -33,7 +33,8 @@ def player_projectile():
                             300,
                             PLAYER_PROJECTILE_SIZE,
                             )
-    pos = pygame.math.Vector2(
+
+    for _ in range(10):pos = pygame.math.Vector2(
         projectile.rect.centerx + randint(-10, 10),
         projectile.rect.bottom
     )
