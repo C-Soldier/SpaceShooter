@@ -1,6 +1,7 @@
 import pygame
 import sys
-from game_functions import Player
+from random import randint
+from game_functions import Player, Particles
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from game_assets import BACKGROUND, PLAYER_SHIP
 
@@ -10,9 +11,19 @@ clock = pygame.time.Clock()
 # Load Background
 background = pygame.transform.scale(pygame.image.load(BACKGROUND).convert(), (SCREEN_WIDTH, SCREEN_HEIGHT))
 
+particle_group = pygame.sprite.Group()
+
 # Load Player
 player_group = pygame.sprite.Group()
-player_group.add(Player())
+player = Player()
+player_group.add(player)
+
+def ship_rocket():
+    pos = player.rect.bottom + randint(-10, 10), player.rect.bottom + randint(-10, 10)
+    color = "yellow"
+    direction = pygame.math.Vector2(0, 1)
+    speed = randint(50, 100)
+    Particles(particle_group, pos, color, direction, speed)
 
 # Game Loop
 def game_loop():
@@ -35,6 +46,7 @@ def game_loop():
         
         # Updates
         player_group.update(dt)
+        particle_group.update(dt)
         pygame.display.flip()
 
 if __name__ == "__main__":
