@@ -19,6 +19,8 @@ class Particles(pygame.sprite.Sprite):
         self.speed = speed
         self.size = 4
         
+        self.create_surf()
+        
     def create_surf(self):
         self.image = pygame.Surface((self.size, self.size)).convert_alpha()
         self.image.set_colorkey("black")
