@@ -1,6 +1,6 @@
 import pygame
 import sys
-from game_functions import Sprites
+from game_functions import Player
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from game_assets import BACKGROUND, PLAYER_SHIP
 
@@ -12,12 +12,7 @@ background = pygame.transform.scale(pygame.image.load(BACKGROUND).convert(), (SC
 
 # Load Player
 player_group = pygame.sprite.Group()
-def player():
-    player_sprite_image = PLAYER_SHIP
-    cordinates = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    speed = 300
-    sprite_size = 64
-    Sprites(player_group, player_sprite_image, cordinates, speed)
+player_group.add(Player())
 
 # Game Loop
 def game_loop():
@@ -28,14 +23,18 @@ def game_loop():
                 pygame.quit()
                 sys.exit()
         
-        player()
-        
         # Clock
-        dt = clock.tick() / 1000
+        dt = clock.tick(60) / 1000
         
         # Window
         window.fill("black")
         window.blit(background)
+        
+        # Display
+        player_group.draw(window)
+        
+        # Updates
+        player_group.update(dt)
         pygame.display.flip()
 
 if __name__ == "__main__":
