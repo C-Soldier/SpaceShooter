@@ -3,6 +3,7 @@ from random import randint, choice
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from game_assets import *
 
+# Player
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -26,6 +27,12 @@ class Player(pygame.sprite.Sprite):
             self.rect.x -= self.speed * dt
         if keys[pygame.K_d]:
             self.rect.x += self.speed * dt
+        
+        # Keep player inside screen
+        self.rect.left = max(0, self.rect.left)
+        self.rect.right = min(SCREEN_WIDTH, self.rect.right)
+        self.rect.top = max(0, self.rect.top)
+        self.rect.bottom = min(SCREEN_HEIGHT, self.rect.bottom)
 
 class Sprites(pygame.sprite.Sprite):
     def __init__(self, groups: pygame.sprite.Group,
