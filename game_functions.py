@@ -1,6 +1,5 @@
 import pygame
-from random import randint, choice
-from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT
+from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SHIP_SIZE
 from game_assets import *
 
 # Particles
@@ -18,6 +17,8 @@ class Particles(pygame.sprite.Sprite):
         self.direction = direction
         self.speed = speed
         self.size = 4
+        self.alpha = 255
+        self.fade_speed = 200
         
         self.create_surf()
         
@@ -31,8 +32,16 @@ class Particles(pygame.sprite.Sprite):
         self.pos += self.direction * self.speed * dt
         self.rect.center = self.pos
     
+    def fade_particles(self, dt):
+        self.alpha -= self.fade_speed * dt
+        self.image.set_alpha(self.alpha)
+        
+        if self.alpha <= 0:
+            self.kill
+    
     def update(self, dt):
         self.move_particles(dt)
+        self.fade_particles(dt)
     
 # Player
 class Player(pygame.sprite.Sprite):
@@ -41,7 +50,7 @@ class Player(pygame.sprite.Sprite):
         self.sprite = PLAYER_SHIP
         self.cordinates = pygame.math.Vector2(SCREEN_WIDTH / 2, SCREEN_HEIGHT/2)
         self.speed = 300
-        self.size = 64
+        self.size = PLAYER_SHIP_SIZE
         
         self.image = pygame.transform.scale(pygame.image.load(self.sprite), (self.size, self.size)).convert_alpha()
         self.rect = self.image.get_rect(center=(self.cordinates))
@@ -86,5 +95,12 @@ class Sprites(pygame.sprite.Sprite):
         if self.size == None:
             self.image = raw_image.convert_alpha()
         else:
-            self.image = pygame.transform.scale(raw_image, (self.size, self.size)).convert_alpha()
+            self.image = pygame.transform.scale(raw_image, (self.size)).convert_alpha()
         self.rect = self.image.get_rect(center=(self.cordinates))
+
+class Projectile(Sprites):
+    def update(self, dt):
+        self.rect.y -= self.speed * dt
+        
+        if self.rect.bottom < 0:
+            self.kill()

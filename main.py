@@ -1,9 +1,9 @@
 import pygame
 import sys
 from random import randint, choice
-from game_functions import Player, Particles
-from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT
-from game_assets import BACKGROUND, PLAYER_SHIP
+from game_functions import Player, Particles, Projectile
+from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE
+from game_assets import BACKGROUND, PLAYER_SHIP, PLAYER_PROJECTILE
 
 window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
@@ -23,6 +23,22 @@ def ship_rocket():
     )
     color = choice(("#CFFF04", "#F6F3E8"))
     direction = pygame.math.Vector2(0, 1)
+    speed = randint(40, 50)
+    Particles(player_group, pos, color, direction, speed)
+
+def player_projectile():
+    projectile = Projectile(player_group,
+                            PLAYER_PROJECTILE, 
+                            (player.rect.centerx, player.rect.top),
+                            300,
+                            PLAYER_PROJECTILE_SIZE,
+                            )
+    pos = pygame.math.Vector2(
+        projectile.rect.centerx + randint(-10, 10),
+        projectile.rect.bottom
+    )
+    color = "#FFEA00"
+    direction = pygame.math.Vector2(0, 1)
     speed = randint(50, 100)
     Particles(player_group, pos, color, direction, speed)
 
@@ -34,6 +50,9 @@ def game_loop():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    player_projectile()
         
         ship_rocket()
         
