@@ -1,4 +1,4 @@
-#What's Happening
+# What's Happening
 ## Main File
 ### Lines 68-71 (From Github Copilot):
 Those four lines are in the player movement update in main.py:53-63. They are a boundary check, also called “clamping.”
