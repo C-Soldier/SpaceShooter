@@ -44,7 +44,7 @@ def player_projectile():
         )
         color = "#FFEA00"
         direction = pygame.math.Vector2(0, 1)
-        speed = randint(50, 100)
+        speed = randint(30, 40)
         Particles(player_group, pos, color, direction, speed)
 
 # Game Loop
