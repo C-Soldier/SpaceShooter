@@ -112,11 +112,11 @@ class Projectile(Sprites):
         if self.rect.bottom < 0:
             self.kill()
         
-        Particles(self.groups, 
-                  (self.rect.centerx + randint(-2, 2), 
+        Particles(groups=self.groups, 
+                  pos=(self.rect.centerx + randint(-2, 2), 
                    self.rect.bottom
                    ), 
-                  "yellow", 
-                  pygame.math.Vector2(0, 1),
-                  randint(30, 40)
+                  color="yellow", 
+                  direction=pygame.math.Vector2(0, 1),
+                  speed=randint(30, 40)
                   )

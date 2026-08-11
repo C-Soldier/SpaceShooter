@@ -3,7 +3,7 @@ import sys
 from random import randint, choice
 from game_functions import Player, Particles, Projectile
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE
-from game_assets import BACKGROUND, PLAYER_SHIP, PLAYER_PROJECTILE
+from game_assets import BACKGROUND, PLAYER_PROJECTILE
 
 window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
