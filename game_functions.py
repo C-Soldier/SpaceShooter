@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SHIP_SIZE
 from game_assets import *
 
@@ -25,7 +26,8 @@ class Particles(pygame.sprite.Sprite):
     def create_surf(self):
         self.image = pygame.Surface((self.size, self.size)).convert_alpha()
         self.image.set_colorkey("black")
-        pygame.draw.circle(surface=self.image, color=self.color, center=(self.size/2, self.size/2), radius=self.size/2)
+        # pygame.draw.circle(surface=self.image, color=self.color, center=(self.size/2, self.size/2), radius=self.size/2)
+        pygame.draw.rect(surface=self.image, color=self.color, rect=(self.direction.x, self.direction.y, self.size, self.size))
         self.rect = self.image.get_rect(center=self.pos)
     
     def move_particles(self, dt):
@@ -99,8 +101,22 @@ class Sprites(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(self.cordinates))
 
 class Projectile(Sprites):
+    def __init__(self, groups, sprite, cordinates, speed, size = None):
+        super().__init__(groups, sprite, cordinates, speed, size)
+        
+        self.groups = groups
+
     def update(self, dt):
         self.rect.y -= self.speed * dt
         
         if self.rect.bottom < 0:
             self.kill()
+        
+        Particles(self.groups, 
+                  (self.rect.centerx + randint(-2, 2), 
+                   self.rect.bottom
+                   ), 
+                  "yellow", 
+                  pygame.math.Vector2(0, 1),
+                  randint(30, 40)
+                  )

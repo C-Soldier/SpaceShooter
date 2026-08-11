@@ -18,34 +18,13 @@ player_group.add(player)
 
 def ship_rocket():
     pos = pygame.math.Vector2(
-        player.rect.centerx + randint(-10, 10), 
+        player.rect.centerx + randint(-5, 5), 
         player.rect.bottom
     )
     color = choice(("#CFFF04", "#F6F3E8"))
     direction = pygame.math.Vector2(0, 1)
     speed = randint(40, 50)
     Particles(player_group, pos, color, direction, speed)
-
-projectile = None
-def player_projectile():
-    global projectile
-    if pygame.mouse.get_just_pressed()[0]:
-        projectile = Projectile(player_group,
-                                PLAYER_PROJECTILE, 
-                                (player.rect.centerx, player.rect.top),
-                                300,
-                                PLAYER_PROJECTILE_SIZE,
-                                )
-
-    if projectile != None:
-        pos = pygame.math.Vector2(
-            projectile.rect.centerx + randint(-5, 5),
-            projectile.rect.bottom
-        )
-        color = "#FFEA00"
-        direction = pygame.math.Vector2(0, 1)
-        speed = randint(30, 40)
-        Particles(player_group, pos, color, direction, speed)
 
 # Game Loop
 def game_loop():
@@ -55,10 +34,16 @@ def game_loop():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                Projectile(player_group,
+                           PLAYER_PROJECTILE, 
+                           (player.rect.centerx, player.rect.top),
+                           300,
+                           PLAYER_PROJECTILE_SIZE
+                           )
                 
         ship_rocket()
-        
-        player_projectile()
         
         # Clock
         dt = clock.tick(60) / 1000
