@@ -1,5 +1,5 @@
 import pygame
-from random import randint
+from random import randint, choice
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SHIP_SIZE
 from game_assets import *
 
@@ -44,7 +44,32 @@ class Particles(pygame.sprite.Sprite):
     def update(self, dt):
         self.move_particles(dt)
         self.fade_particles(dt)
+
+# Sprites
+class Sprites(pygame.sprite.Sprite):
+    def __init__(self, groups: pygame.sprite.Group,
+                 sprite: str,
+                 cordinates: pygame.math.Vector2,
+                 speed: int,
+                 size: tuple[int] = None
+                 ):
+        super().__init__(groups)
+        self.sprite = sprite
+        self.cordinates = cordinates
+        self.speed = speed
+        self.size = size
+        
+        self.create_sprite()
     
+    def create_sprite(self):
+        raw_image = pygame.image.load(self.sprite)
+        if self.size == None:
+            self.image = raw_image.convert_alpha()
+        else:
+            self.image = pygame.transform.scale(raw_image, (self.size)).convert_alpha()
+        self.rect = self.image.get_rect(center=(self.cordinates))
+        self.mask = pygame.mask.from_surface(self.image)
+
 # Player
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -76,30 +101,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.top = max(0, self.rect.top)
         self.rect.bottom = min(SCREEN_HEIGHT, self.rect.bottom)
 
-# Other Sprites
-class Sprites(pygame.sprite.Sprite):
-    def __init__(self, groups: pygame.sprite.Group,
-                 sprite: str,
-                 cordinates: pygame.math.Vector2,
-                 speed: int,
-                 size: tuple[int] = None
-                 ):
-        super().__init__(groups)
-        self.sprite = sprite
-        self.cordinates = cordinates
-        self.speed = speed
-        self.size = size
-        
-        self.create_sprite()
-    
-    def create_sprite(self):
-        raw_image = pygame.image.load(self.sprite)
-        if self.size == None:
-            self.image = raw_image.convert_alpha()
-        else:
-            self.image = pygame.transform.scale(raw_image, (self.size)).convert_alpha()
-        self.rect = self.image.get_rect(center=(self.cordinates))
-
 class Projectile(Sprites):
     def __init__(self, groups, sprite, cordinates, speed, size = None):
         super().__init__(groups, sprite, cordinates, speed, size)
@@ -120,3 +121,26 @@ class Projectile(Sprites):
                   direction=pygame.math.Vector2(0, 1),
                   speed=randint(30, 40)
                   )
+
+class Asteroids(Sprites):
+    def __init__(self, groups, sprite, cordinates, speed, size = None):
+        super().__init__(groups, sprite, cordinates, speed, size)
+        self.angle = 0
+        
+        self.original_image = self.image.copy()
+        self.rotation_speed = randint(-2, 2)
+        
+        if self.rotation_speed == 0:
+            self.rotation_speed = choice((-1, 1))
+    
+    def update(self, dt):
+        self.rect.y += self.speed * dt
+        
+        self.angle = (self.angle + self.rotation_speed) % 360
+        self.image = pygame.transform.rotate(self.original_image, self.angle)
+        self.rect = self.image.get_rect(center=self.rect.center)
+        
+        if self.rect.top > SCREEN_HEIGHT:
+            self.kill()
+        
+        
