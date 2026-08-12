@@ -145,4 +145,5 @@ class Asteroids(Sprites):
         if self.rect.top > SCREEN_HEIGHT:
             self.kill()
         
-        
+class Explosions(Particles):
+    pass        
