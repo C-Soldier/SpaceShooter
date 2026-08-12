@@ -15,6 +15,7 @@ background = pygame.transform.scale(pygame.image.load(BACKGROUND).convert(), (SC
 player_group = pygame.sprite.Group()
 player = Player()
 player_group.add(player)
+player_projectile_group = pygame.sprite.Group()
 
 # Asteroids
 asteroid_group = pygame.sprite.Group()
@@ -58,7 +59,7 @@ def game_loop():
                 sys.exit()
             
             if event.type == pygame.MOUSEBUTTONDOWN:
-                Projectile(player_group,
+                Projectile(player_projectile_group,
                            PLAYER_PROJECTILE, 
                            (player.rect.centerx, player.rect.top),
                            300,
@@ -70,6 +71,12 @@ def game_loop():
         
         ship_rocket()
         
+        pygame.sprite.groupcollide(player_projectile_group, asteroid_group, True, True, pygame.sprite.collide_mask)
+        
+        if pygame.sprite.spritecollide(player, asteroid_group, True, pygame.sprite.collide_mask):
+            print("got hit")
+        
+            
         # Clock
         dt = clock.tick(60) / 1000
         
@@ -79,10 +86,12 @@ def game_loop():
         
         # Display
         player_group.draw(window)
+        player_projectile_group.draw(window)
         asteroid_group.draw(window)
         
         # Updates
         player_group.update(dt)
+        player_projectile_group.update(dt)
         asteroid_group.update(dt)
         pygame.display.flip()
 
