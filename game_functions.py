@@ -101,6 +101,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.top = max(0, self.rect.top)
         self.rect.bottom = min(SCREEN_HEIGHT, self.rect.bottom)
 
+# Projectiles
 class Projectile(Sprites):
     def __init__(self, groups, sprite, cordinates, speed, size = None):
         super().__init__(groups, sprite, cordinates, speed, size)
@@ -122,6 +123,7 @@ class Projectile(Sprites):
                   speed=randint(30, 40)
                   )
 
+# Asteroids
 class Asteroids(Sprites):
     def __init__(self, groups, sprite, cordinates, speed, size = None):
         super().__init__(groups, sprite, cordinates, speed, size)

@@ -1,7 +1,7 @@
 import pygame
 import sys
 from random import randint, choice, uniform
-from game_functions import Player, Particles, Projectile, Asteroids, Collision
+from game_functions import Player, Particles, Projectile, Asteroids
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE
 from game_assets import BACKGROUND, PLAYER_PROJECTILE, ASTEROIDS
 
@@ -40,11 +40,11 @@ def spawn_asteroids():
     size = randint(30, 80)
     
     Asteroids(asteroid_group, 
-            choice((ASTEROIDS)), 
-            cordinates,
-            speed,
-            (size, size)
-            )
+              choice((ASTEROIDS)), 
+              cordinates,
+              speed,
+              (size, size) 
+    )
     
 
 
