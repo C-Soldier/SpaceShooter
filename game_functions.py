@@ -1,7 +1,7 @@
 import pygame
 from random import randint, choice
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SHIP_SIZE
-from game_assets import *
+from game_assets import PLAYER_SHIP
 
 # Particles
 class Particles(pygame.sprite.Sprite):
@@ -145,5 +145,4 @@ class Asteroids(Sprites):
         if self.rect.top > SCREEN_HEIGHT:
             self.kill()
         
-class Explosions(Particles):
-    pass        
+       

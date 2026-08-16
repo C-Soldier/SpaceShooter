@@ -20,6 +20,9 @@ player_projectile_group = pygame.sprite.Group()
 # Asteroids
 asteroid_group = pygame.sprite.Group()
 
+# Effects
+particle_group = pygame.sprite.Group()
+
 # Events
 asteroid_event = pygame.USEREVENT
 pygame.time.set_timer(asteroid_event, 1000)
@@ -30,10 +33,10 @@ def ship_rocket():
         player.rect.centerx + randint(-5, 5), 
         player.rect.bottom
     )
-    color = choice(("#CFFF04", "#F6F3E8"))
+    color = choice(("orange", "red"))
     direction = pygame.math.Vector2(0, 1)
     speed = randint(40, 50)
-    Particles(player_group, pos, color, direction, speed)
+    Particles(particle_group, pos, color, direction, speed)
 
 def spawn_asteroids():
     cordinates = pygame.math.Vector2(uniform(10, (SCREEN_WIDTH - 10)), 0)
@@ -47,7 +50,9 @@ def spawn_asteroids():
               (size, size) 
     )
     
-
+def explosion(n: int):
+    for _ in range(n):
+        pass
 
 # Game Loop
 def game_loop():
@@ -71,7 +76,8 @@ def game_loop():
         
         ship_rocket()
         
-        pygame.sprite.groupcollide(player_projectile_group, asteroid_group, True, True, pygame.sprite.collide_mask)
+        if pygame.sprite.groupcollide(player_projectile_group, asteroid_group, True, True, pygame.sprite.collide_mask):
+            print("Got em")
         
         if pygame.sprite.spritecollide(player, asteroid_group, True, pygame.sprite.collide_mask):
             print("got hit")
@@ -88,11 +94,13 @@ def game_loop():
         player_group.draw(window)
         player_projectile_group.draw(window)
         asteroid_group.draw(window)
-        
+        particle_group.draw(window)
+         
         # Updates
         player_group.update(dt)
         player_projectile_group.update(dt)
         asteroid_group.update(dt)
+        particle_group.update(dt)
         pygame.display.flip()
 
 if __name__ == "__main__":
