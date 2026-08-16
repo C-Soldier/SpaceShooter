@@ -49,10 +49,6 @@ def spawn_asteroids():
               speed,
               (size, size) 
     )
-    
-def explosion(n: int):
-    for _ in range(n):
-        pass
 
 # Game Loop
 def game_loop():

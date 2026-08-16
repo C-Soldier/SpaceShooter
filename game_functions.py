@@ -45,6 +45,11 @@ class Particles(pygame.sprite.Sprite):
         self.move_particles(dt)
         self.fade_particles(dt)
 
+class Exploding_Particles(Particles):
+    
+    def update(self):
+        pass
+
 # Sprites
 class Sprites(pygame.sprite.Sprite):
     def __init__(self, groups: pygame.sprite.Group,
