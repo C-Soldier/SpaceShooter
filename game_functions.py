@@ -82,18 +82,17 @@ class Collisions():
         self.groupb = groupb
         self.kill_a = kill_a
         self.kill_b = kill_b
-        
-        self.check_collision()
+        self.collision_detected = self.check_collision()
     
     def check_collision(self):
-        if pygame.sprite.groupcollide(
+        collision_result = pygame.sprite.groupcollide(
             self.groupa, 
             self.groupb, 
             self.kill_a, 
             self.kill_b,
             pygame.sprite.collide_mask
-        ):
-            print("got em")
+        )
+        return bool(collision_result)
             
 
 # Player
@@ -179,7 +178,8 @@ class Asteroids(Sprites):
         self.image = pygame.transform.rotate(self.original_image, self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
         
-        if Collisions(self.groups, self.collide_group, True, True):
+        collision = Collisions(self.groups, self.collide_group, True, True)
+        if collision.collision_detected:
             for _ in range(100):
                 Particles(
                     groups=self.particles_group,
