@@ -1,5 +1,5 @@
 import pygame
-from random import randint, choice
+from random import randint, choice, uniform
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SHIP_SIZE
 from game_assets import PLAYER_SHIP
 
@@ -45,11 +45,6 @@ class Particles(pygame.sprite.Sprite):
         self.move_particles(dt)
         self.fade_particles(dt)
 
-class Exploding_Particles(Particles):
-    
-    def update(self):
-        pass
-
 # Sprites
 class Sprites(pygame.sprite.Sprite):
     def __init__(self, groups: pygame.sprite.Group,
@@ -74,6 +69,32 @@ class Sprites(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(raw_image, (self.size)).convert_alpha()
         self.rect = self.image.get_rect(center=(self.cordinates))
         self.mask = pygame.mask.from_surface(self.image)
+
+# Collisons
+class Collisions():
+    def __init__(self, 
+                 groupa: pygame.sprite.Group, 
+                 groupb: pygame.sprite.Group, 
+                 kill_a: bool,
+                 kill_b: bool
+                 ):
+        self.groupa = groupa
+        self.groupb = groupb
+        self.kill_a = kill_a
+        self.kill_b = kill_b
+        
+        self.check_collision()
+    
+    def check_collision(self):
+        if pygame.sprite.groupcollide(
+            self.groupa, 
+            self.groupb, 
+            self.kill_a, 
+            self.kill_b,
+            pygame.sprite.collide_mask
+        ):
+            print("got em")
+            
 
 # Player
 class Player(pygame.sprite.Sprite):
@@ -130,9 +151,20 @@ class Projectile(Sprites):
 
 # Asteroids
 class Asteroids(Sprites):
-    def __init__(self, groups, sprite, cordinates, speed, size = None):
+    def __init__(self, 
+                 groups,
+                 collide_group: pygame.sprite.Group, 
+                 particles_group: pygame.sprite.Group, 
+                 sprite, 
+                 cordinates,
+                 speed, 
+                 size = None
+                 ):
         super().__init__(groups, sprite, cordinates, speed, size)
+        self.groups = groups
         self.angle = 0
+        self.collide_group = collide_group
+        self.particles_group = particles_group
         
         self.original_image = self.image.copy()
         self.rotation_speed = randint(-2, 2)
@@ -147,7 +179,18 @@ class Asteroids(Sprites):
         self.image = pygame.transform.rotate(self.original_image, self.angle)
         self.rect = self.image.get_rect(center=self.rect.center)
         
+        if Collisions(self.groups, self.collide_group, True, True):
+            for _ in range(100):
+                Particles(
+                    groups=self.particles_group,
+                    pos=(self.rect.centerx, self.rect.centery),
+                    color="white",
+                    direction=pygame.math.Vector2(uniform(-1, 1), uniform(-1, 1)),
+                    speed=randint(50, 400)
+                )
+        
         if self.rect.top > SCREEN_HEIGHT:
             self.kill()
+            
         
        
