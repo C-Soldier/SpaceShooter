@@ -82,9 +82,9 @@ class Collisions():
         self.groupb = groupb
         self.kill_a = kill_a
         self.kill_b = kill_b
-        self.collision_detected = self.check_collision()
+        self.collision_detected = self.check_group_collision()
     
-    def check_collision(self):
+    def check_group_collision(self):
         collision_result = pygame.sprite.groupcollide(
             self.groupa, 
             self.groupb, 
@@ -93,6 +93,15 @@ class Collisions():
             pygame.sprite.collide_mask
         )
         return bool(collision_result)
+    
+    def check_sprite_collision(self):
+            collision_result = pygame.sprite.spritecollide(
+                self.groupa, 
+                self.groupb, 
+                self.kill_b,
+                pygame.sprite.collide_mask
+            )
+            return bool(collision_result)
             
 
 # Player

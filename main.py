@@ -17,6 +17,9 @@ player = Player()
 player_group.add(player)
 player_projectile_group = pygame.sprite.Group()
 
+# Health
+health_group = pygame.sprite.Group()
+
 # Asteroids
 asteroid_group = pygame.sprite.Group()
 
