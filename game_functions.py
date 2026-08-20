@@ -104,6 +104,24 @@ class Collisions():
             return bool(collision_result)
             
 
+# Health Tracker
+class Health(pygame.sprite.Sprite):
+    def __init__(self, groups, health_sprite, lives_num):
+        super().__init__(groups)
+        self.groups = groups
+        self.health_sprite = health_sprite
+        self.lives_num = lives_num
+        self.cordinates = pygame.math.Vector2(
+            SCREEN_WIDTH - 20,
+            SCREEN_HEIGHT - 20
+        )
+        self.size = (30, 30)
+        
+    def show_health(self):
+        for _ in range(self.lives_num):
+            Sprites(self.groups, self.health_sprite, self.cordinates, 0, self.size)
+            
+    
 # Player
 class Player(pygame.sprite.Sprite):
     def __init__(self):
