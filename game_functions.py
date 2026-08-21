@@ -75,8 +75,8 @@ class Collisions():
     def __init__(self, 
                  groupa: pygame.sprite.Group, 
                  groupb: pygame.sprite.Group, 
-                 kill_a: bool,
-                 kill_b: bool
+                 kill_a: bool = False,
+                 kill_b: bool = False
                  ):
         self.groupa = groupa
         self.groupb = groupb
@@ -105,7 +105,7 @@ class Collisions():
             
 
 # Health Tracker
-class Health(pygame.sprite.Sprite):
+class Health():
     def __init__(self, groups, health_sprite, lives_num):
         super().__init__(groups)
         self.groups = groups
@@ -117,10 +117,16 @@ class Health(pygame.sprite.Sprite):
         )
         self.size = (30, 30)
         
-    def show_health(self):
-        for _ in range(self.lives_num):
-            Sprites(self.groups, self.health_sprite, self.cordinates, 0, self.size)
+        self.health_deplete()
+    
+    def health_deplete(self):
+        collision = Collisions(self.groups, self.collide_group, True, True)
+        if collision.collision_detected:
+            self.lives_num -= 1
             
+            if self.lives_num <= 0:
+                self.kill()
+        
     
 # Player
 class Player(pygame.sprite.Sprite):
