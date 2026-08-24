@@ -1,9 +1,9 @@
 import pygame
 import sys
 from random import randint, choice, uniform
-from game_functions import Player, Particles, Projectile, Asteroids
+from game_functions import Player, Particles, Projectile, Asteroids, Health
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE
-from game_assets import BACKGROUND, PLAYER_PROJECTILE, ASTEROIDS
+from game_assets import BACKGROUND, PLAYER_PROJECTILE, ASTEROIDS, PLAYER_HEALTH
 
 window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
@@ -41,6 +41,9 @@ def ship_rocket():
     speed = randint(40, 50)
     Particles(particles_group, pos, color, direction, speed)
 
+def player_health():
+    Health(health_group, asteroid_group, player, PLAYER_HEALTH, 3)
+
 def spawn_asteroids():
     cordinates = pygame.math.Vector2(uniform(10, (SCREEN_WIDTH - 10)), 0)
     speed = randint(200, 300)
@@ -76,6 +79,7 @@ def game_loop():
                 spawn_asteroids()
         
         ship_rocket()
+        player_health()
         
         if pygame.sprite.spritecollide(player, asteroid_group, True, pygame.sprite.collide_mask):
             print("got hit")
@@ -90,12 +94,14 @@ def game_loop():
         
         # Display
         player_group.draw(window)
+        health_group.draw(window)
         player_projectile_group.draw(window)
         asteroid_group.draw(window)
         particles_group.draw(window)
          
         # Updates
         player_group.update(dt)
+        health_group.update()
         player_projectile_group.update(dt)
         asteroid_group.update(dt)
         particles_group.update(dt)

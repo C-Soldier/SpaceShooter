@@ -73,8 +73,8 @@ class Sprites(pygame.sprite.Sprite):
 # Collisons
 class Collisions():
     def __init__(self, 
-                 groupa: pygame.sprite.Group, 
-                 groupb: pygame.sprite.Group, 
+                 groupa, 
+                 groupb, 
                  kill_a: bool = False,
                  kill_b: bool = False
                  ):
@@ -82,46 +82,58 @@ class Collisions():
         self.groupb = groupb
         self.kill_a = kill_a
         self.kill_b = kill_b
-        self.collision_detected = self.check_group_collision()
-    
+
     def check_group_collision(self):
-        collision_result = pygame.sprite.groupcollide(
+        group_collision_result = pygame.sprite.groupcollide(
             self.groupa, 
             self.groupb, 
             self.kill_a, 
             self.kill_b,
             pygame.sprite.collide_mask
         )
-        return bool(collision_result)
+        return bool(group_collision_result)
     
-    def check_sprite_collision(self):
-            collision_result = pygame.sprite.spritecollide(
-                self.groupa, 
-                self.groupb, 
-                self.kill_b,
-                pygame.sprite.collide_mask
-            )
-            return bool(collision_result)
+    def check_sprite_collision(self, sprite):
+        sprite_collision_result = pygame.sprite.spritecollide(
+            sprite, 
+            self.groupb, 
+            self.kill_b,
+            pygame.sprite.collide_mask
+        )
+        return bool(sprite_collision_result)
             
 
 # Health Tracker
-class Health():
-    def __init__(self, groups, health_sprite, lives_num):
+class Health(pygame.sprite.Sprite):
+    def __init__(self, 
+                groups, 
+                collide_group: pygame.sprite.Group,
+                sprite,
+                health_sprite: str,
+                lives_num: int
+                ):
         super().__init__(groups)
         self.groups = groups
+        self.collide_group = collide_group
+        self.sprite = sprite
         self.health_sprite = health_sprite
         self.lives_num = lives_num
         self.cordinates = pygame.math.Vector2(
-            SCREEN_WIDTH - 20,
-            SCREEN_HEIGHT - 20
+            SCREEN_WIDTH /2,
+            SCREEN_HEIGHT / 2
         )
         self.size = (30, 30)
         
-        self.health_deplete()
+        self.display_health()
+        
     
-    def health_deplete(self):
-        collision = Collisions(self.groups, self.collide_group, True, True)
-        if collision.collision_detected:
+    def display_health(self):
+        self.image = pygame.transform.scale(pygame.image.load(self.health_sprite), (self.size)).convert_alpha()
+        self.rect = self.image.get_rect(center=(self.cordinates))
+    
+    def update(self):
+        sprite_collision = Collisions(self.sprite, self.collide_group, False, True)
+        if sprite_collision.check_sprite_collision(self.sprite):
             self.lives_num -= 1
             
             if self.lives_num <= 0:
@@ -142,6 +154,7 @@ class Player(pygame.sprite.Sprite):
         
         
     def update(self, dt):
+        # Control Player
         keys = pygame.key.get_pressed()
         
         if keys[pygame.K_w]:
@@ -212,7 +225,7 @@ class Asteroids(Sprites):
         self.rect = self.image.get_rect(center=self.rect.center)
         
         collision = Collisions(self.groups, self.collide_group, True, True)
-        if collision.collision_detected:
+        if collision.check_group_collision():
             for _ in range(100):
                 Particles(
                     groups=self.particles_group,
