@@ -118,10 +118,7 @@ class Health(pygame.sprite.Sprite):
         self.sprite = sprite
         self.health_sprite = health_sprite
         self.lives_num = lives_num
-        self.cordinates = pygame.math.Vector2(
-            SCREEN_WIDTH /2,
-            SCREEN_HEIGHT / 2
-        )
+        self.cordinates = pygame.math.Vector2(20, 20)
         self.size = (30, 30)
         
         self.display_health()
