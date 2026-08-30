@@ -50,7 +50,7 @@ def player_health(lives_num: int):
 
 def spawn_asteroids():
     cordinates = pygame.math.Vector2(uniform(10, (SCREEN_WIDTH - 10)), 0)
-    speed = randint(200, 300)
+    speed = randint(500, 550)
     size = randint(30, 80)
     
     Asteroids(asteroid_group,
@@ -64,15 +64,15 @@ def spawn_asteroids():
 
 # Game Over
 def game_over():
-    text_font = pygame.font.Font(None, 32)
+    text_font = pygame.font.Font(None, 64)
     text_surface = text_font.render("GAME OVER", False, (255, 0, 0))
     text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-    
-    return window.blit(text_surface, text_rect)
+    window.blit(text_surface, text_rect)
     
 # Game Loop
 def game_loop():
     lives_num = 3
+    game_over_flag = False
     while True:
         # Cycle Through Events
         for event in pygame.event.get():
@@ -80,7 +80,7 @@ def game_loop():
                 pygame.quit()
                 sys.exit()
             
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if not game_over_flag and event.type == pygame.MOUSEBUTTONDOWN:
                 Projectile(player_projectile_group,
                            PLAYER_PROJECTILE, 
                            (player.rect.centerx, player.rect.top),
@@ -88,23 +88,24 @@ def game_loop():
                            PLAYER_PROJECTILE_SIZE
                            )
             
-            if event.type == asteroid_event:
+            if not game_over_flag and event.type == asteroid_event:
                 spawn_asteroids()
         
-        ship_rocket()
-        player_health(lives_num)
+        if not game_over_flag:
+            ship_rocket()
+            player_health(lives_num)
+            
+            # Check Player Collision with Asteroids And Lives
+            player_collision = Collisions(player_group, asteroid_group, False, True)
+            if player_collision.check_group_collision():    
+                lives_num -= 1
+            if lives_num <= 0:
+                game_over_flag = True
+                player_group.empty()
+                particles_group.empty()
+                player_projectile_group.empty()
+                asteroid_group.empty()
         
-        # Check Player Collision with Asteroids And Lives
-        player_collision = Collisions(player_group, asteroid_group, False, True)
-        if player_collision.check_group_collision():    
-            lives_num -= 1
-        if lives_num <= 0:
-            player_group.empty()
-            particles_group.empty()
-        
-        if len(player_group) == 0:
-            game_over()
-                
         # Clock
         dt = clock.tick(60) / 1000
         
@@ -112,19 +113,22 @@ def game_loop():
         window.fill("black")
         window.blit(background, (0, 0))
         
-        # Display
-        player_group.draw(window)
-        health_group.draw(window)
-        player_projectile_group.draw(window)
-        asteroid_group.draw(window)
-        particles_group.draw(window)
-         
-        # Updates
-        player_group.update(dt)
-        health_group.update()
-        player_projectile_group.update(dt)
-        asteroid_group.update(dt)
-        particles_group.update(dt)
+        if not game_over_flag:
+            # Display
+            player_group.draw(window)
+            health_group.draw(window)
+            player_projectile_group.draw(window)
+            asteroid_group.draw(window)
+            particles_group.draw(window)
+            
+            # Updates
+            player_group.update(dt)
+            health_group.update()
+            player_projectile_group.update(dt)
+            asteroid_group.update(dt)
+            particles_group.update(dt)
+        else:
+            game_over()
         draw_score(window)
         pygame.display.flip()
 
