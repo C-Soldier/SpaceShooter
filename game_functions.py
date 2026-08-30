@@ -3,6 +3,9 @@ from random import randint, choice, uniform
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SHIP_SIZE
 from game_assets import PLAYER_SHIP
 
+score_value = 0
+high_score_value = 0
+
 # Particles
 class Particles(pygame.sprite.Sprite):
     def __init__(self, 
@@ -92,10 +95,23 @@ class Collisions():
             pygame.sprite.collide_mask
         )
         return bool(group_collision_result)
-            
 
-# Health Tracker
-       
+# Draw Score
+def draw_score(window: pygame.display.set_mode):
+    global score_value, high_score_value
+
+    if score_value > high_score_value:
+        high_score_value = score_value
+
+    set_font = pygame.font.Font(None, 32)
+    text_surface = set_font.render(
+        f"High Score: {high_score_value} \nScore: {score_value}",
+        False,
+        (255, 255, 255)
+    )
+
+    text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, 30))
+    return window.blit(text_surface, text_rect)
     
 # Player
 class Player(pygame.sprite.Sprite):
@@ -197,6 +213,7 @@ class Asteroids(Sprites):
             self.rotation_speed = choice((-1, 1))
     
     def update(self, dt):
+        global score_value
         self.rect.y += self.speed * dt
         
         self.angle = (self.angle + self.rotation_speed) % 360
@@ -213,6 +230,8 @@ class Asteroids(Sprites):
                     direction=pygame.math.Vector2(uniform(-1, 1), uniform(-1, 1)),
                     speed=randint(50, 400)
                 )
+            
+            score_value += 10
         
         if self.rect.top > SCREEN_HEIGHT:
             self.kill()

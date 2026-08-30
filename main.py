@@ -1,7 +1,7 @@
 import pygame
 import sys
 from random import randint, choice, uniform
-from game_functions import Player, Particles, Projectile, Asteroids, Collisions
+from game_functions import Player, Particles, Projectile, Asteroids, Collisions, draw_score
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE
 from game_assets import BACKGROUND, PLAYER_PROJECTILE, ASTEROIDS, HP
 
@@ -62,6 +62,14 @@ def spawn_asteroids():
               (size, size) 
     )   
 
+# Game Over
+def game_over():
+    text_font = pygame.font.Font(None, 32)
+    text_surface = text_font.render("GAME OVER", False, (255, 0, 0))
+    text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    
+    return window.blit(text_surface, text_rect)
+    
 # Game Loop
 def game_loop():
     lives_num = 3
@@ -87,12 +95,15 @@ def game_loop():
         player_health(lives_num)
         
         # Check Player Collision with Asteroids And Lives
-        collision = Collisions(player_group, asteroid_group, False, True)
-        if collision.check_group_collision():    
+        player_collision = Collisions(player_group, asteroid_group, False, True)
+        if player_collision.check_group_collision():    
             lives_num -= 1
         if lives_num <= 0:
             player_group.empty()
             particles_group.empty()
+        
+        if len(player_group) == 0:
+            game_over()
                 
         # Clock
         dt = clock.tick(60) / 1000
@@ -114,6 +125,7 @@ def game_loop():
         player_projectile_group.update(dt)
         asteroid_group.update(dt)
         particles_group.update(dt)
+        draw_score(window)
         pygame.display.flip()
 
 if __name__ == "__main__":
