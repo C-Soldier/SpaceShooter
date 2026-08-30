@@ -134,7 +134,6 @@ class Player(pygame.sprite.Sprite):
                     player_ship: pygame.sprite.Group, 
                     collide_group: pygame.sprite.Group,
                     health_sprite: str,
-                    lives_num: int,
                     cordinates: pygame.math.Vector2
                     ):
             super().__init__(groups)
@@ -143,7 +142,6 @@ class Player(pygame.sprite.Sprite):
             self.collide_group = collide_group
             self.health_sprite = health_sprite
             self.cordinates = cordinates
-            self.lives_num = lives_num
             self.size = (30, 30)
             
             self.display_health()
@@ -153,17 +151,6 @@ class Player(pygame.sprite.Sprite):
             self.image = pygame.transform.scale(pygame.image.load(self.health_sprite), (self.size)).convert_alpha()
             self.rect = self.image.get_rect(center=(self.cordinates))
         
-        def update(self):    
-            self.cordinates.x += 35
-            dead = False
-
-            collision = Collisions(self.player_ship, self.collide_group, dead, True)
-            
-            if collision.check_group_collision():
-                self.lives_num -= 1
-                
-                if self.lives_num <= 0:
-                    dead = True
 # Projectiles
 class Projectile(Sprites):
     def __init__(self, groups, sprite, cordinates, speed, size = None):
