@@ -2,7 +2,7 @@ import pygame
 import sys
 from random import randint, choice, uniform
 from game_functions import Player, Particles, Projectile, Asteroids, Collisions, draw_score
-from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE
+from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE, HIGH_SCORE_FILE
 from game_assets import BACKGROUND, PLAYER_PROJECTILE, ASTEROIDS, HP
 
 window = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -64,10 +64,17 @@ def spawn_asteroids():
 
 # Game Over
 def game_over():
-    text_font = pygame.font.Font(None, 64)
-    text_surface = text_font.render("GAME OVER", False, (255, 0, 0))
-    text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-    window.blit(text_surface, text_rect)
+    def show_high_score():
+        with open(HIGH_SCORE_FILE) as file:
+            file.read()
+    text_font1 = pygame.font.Font(None, 64)
+    text_font2 = pygame.font.Font(None, 32)
+    text_surface1 = text_font1.render("GAME OVER", False, (255, 0, 0))
+    text_rect1 = text_surface1.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    text_surface2 = text_font2.render(f"High Score: {show_high_score()}", False, (255, 0, 0))
+    text_rect2 = text_surface2.get_rect(center=(SCREEN_WIDTH // 2, (SCREEN_HEIGHT // 2) + 45))
+    window.blit(text_surface1, text_rect1)
+    window.blit(text_surface2, text_rect2)
     
 # Game Loop
 def game_loop():
