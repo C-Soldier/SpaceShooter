@@ -2,7 +2,7 @@ import pygame
 import sys
 import game_functions
 from random import randint, choice, uniform
-from game_functions import Player, Particles, Projectile, Asteroids, Collisions, draw_score
+from game_functions import Player, Particles, Projectile, Asteroids, Collisions, draw_score, restart_game
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE, HIGH_SCORE_FILE
 from game_assets import BACKGROUND, PLAYER_PROJECTILE, ASTEROIDS, HP
 
@@ -86,7 +86,8 @@ def game_over():
     show_high_score()
     
     window.blit(text_surface1, text_rect1)
-    
+
+
 # Game Loop
 def game_loop():
     lives_num = 3
@@ -147,6 +148,7 @@ def game_loop():
             particles_group.update(dt)
         else:
             game_over()
+            restart_game(window)
         draw_score(window)
         pygame.display.flip()
 

@@ -118,7 +118,24 @@ def draw_score(window: pygame.display.set_mode):
         with open(HIGH_SCORE_FILE, 'wb') as file:
             binary_data = high_score_value.to_bytes(length=4, byteorder="big")
             file.write(binary_data)
+
+def restart_game(window: pygame.display.set_mode):
+    global score_value, game_over_flag
+    if game_over_flag == True:
+        set_font = pygame.font.Font(None, 32)
+        
+        text_surface = set_font.render(f"Press Enter To Try Again", False, (255, 0, 0))
+        
+        text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, (SCREEN_HEIGHT // 2) + 90))
+        
+        window.blit(text_surface, text_rect)
     
+    keys = pygame.key.get_pressed()
+            
+    if keys[pygame.K_SPACE]:
+        game_over_flag = False
+        score_value = 0
+
 # Player
 class Player(pygame.sprite.Sprite):
     def __init__(self):
