@@ -131,10 +131,13 @@ def restart_game(window: pygame.display.set_mode):
         window.blit(text_surface, text_rect)
     
     keys = pygame.key.get_pressed()
-            
+        
     if keys[pygame.K_SPACE]:
         game_over_flag = False
         score_value = 0
+        return True
+
+    return False
 
 # Player
 class Player(pygame.sprite.Sprite):

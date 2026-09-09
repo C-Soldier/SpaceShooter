@@ -148,7 +148,10 @@ def game_loop():
             particles_group.update(dt)
         else:
             game_over()
-            restart_game(window)
+            if restart_game(window):
+                lives_num = 3
+                player.rect.center = (SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                player_group.add(player)
         draw_score(window)
         pygame.display.flip()
 
