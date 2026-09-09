@@ -1,10 +1,11 @@
 import pygame
 from random import randint, choice, uniform
-from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SHIP_SIZE
+from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_SHIP_SIZE, HIGH_SCORE_FILE
 from game_assets import PLAYER_SHIP
 
 score_value = 0
-high_score_value = 0
+high_score_value = int.from_bytes(open(HIGH_SCORE_FILE, 'rb').read(4), byteorder="big")
+game_over_flag = False
 
 # Particles
 class Particles(pygame.sprite.Sprite):
@@ -104,14 +105,19 @@ def draw_score(window: pygame.display.set_mode):
         high_score_value = score_value
 
     set_font = pygame.font.Font(None, 32)
-    text_surface = set_font.render(
-        f"High Score: {high_score_value} \nScore: {score_value}",
-        False,
-        (255, 255, 255)
-    )
+    text_surface1 = set_font.render(f"High Score: {high_score_value}", False, (255, 255, 255))
+    text_surface2 = set_font.render(f"Score: {score_value}", False, (255, 255, 255))
 
-    text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, 30))
-    return window.blit(text_surface, text_rect)
+    text_rect1 = text_surface1.get_rect(center=(SCREEN_WIDTH // 2, 30))
+    text_rect2 = text_surface2.get_rect(center=(SCREEN_WIDTH // 2, 60))
+    
+    window.blit(text_surface1, text_rect1)
+    window.blit(text_surface2, text_rect2)
+    
+    if game_over_flag == True:
+        with open(HIGH_SCORE_FILE, 'wb') as file:
+            binary_data = high_score_value.to_bytes(length=4, byteorder="big")
+            file.write(binary_data)
     
 # Player
 class Player(pygame.sprite.Sprite):

@@ -1,5 +1,6 @@
 import pygame
 import sys
+import game_functions
 from random import randint, choice, uniform
 from game_functions import Player, Particles, Projectile, Asteroids, Collisions, draw_score
 from game_constants import SCREEN_WIDTH, SCREEN_HEIGHT, PLAYER_PROJECTILE_SIZE, HIGH_SCORE_FILE
@@ -65,21 +66,31 @@ def spawn_asteroids():
 # Game Over
 def game_over():
     def show_high_score():
-        with open(HIGH_SCORE_FILE) as file:
-            file.read()
+        with open(HIGH_SCORE_FILE, 'rb') as file:
+            binary_data = file.read(4)
+            
+            high_score = int.from_bytes(binary_data, byteorder="big")
+            
+            text_font2 = pygame.font.Font(None, 32)
+            
+            text_surface2 = text_font2.render(f"High Score: {high_score}", False, (255, 0, 0))
+            text_rect2 = text_surface2.get_rect(center=(SCREEN_WIDTH // 2, (SCREEN_HEIGHT // 2) + 45))
+            
+            window.blit(text_surface2, text_rect2)
+            
+            
     text_font1 = pygame.font.Font(None, 64)
-    text_font2 = pygame.font.Font(None, 32)
+    
     text_surface1 = text_font1.render("GAME OVER", False, (255, 0, 0))
     text_rect1 = text_surface1.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
-    text_surface2 = text_font2.render(f"High Score: {show_high_score()}", False, (255, 0, 0))
-    text_rect2 = text_surface2.get_rect(center=(SCREEN_WIDTH // 2, (SCREEN_HEIGHT // 2) + 45))
+    show_high_score()
+    
     window.blit(text_surface1, text_rect1)
-    window.blit(text_surface2, text_rect2)
     
 # Game Loop
 def game_loop():
     lives_num = 3
-    game_over_flag = False
+    global game_over_flag
     while True:
         # Cycle Through Events
         for event in pygame.event.get():
@@ -87,7 +98,7 @@ def game_loop():
                 pygame.quit()
                 sys.exit()
             
-            if not game_over_flag and event.type == pygame.MOUSEBUTTONDOWN:
+            if not game_functions.game_over_flag and event.type == pygame.MOUSEBUTTONDOWN:
                 Projectile(player_projectile_group,
                            PLAYER_PROJECTILE, 
                            (player.rect.centerx, player.rect.top),
@@ -95,10 +106,10 @@ def game_loop():
                            PLAYER_PROJECTILE_SIZE
                            )
             
-            if not game_over_flag and event.type == asteroid_event:
+            if not game_functions.game_over_flag and event.type == asteroid_event:
                 spawn_asteroids()
         
-        if not game_over_flag:
+        if not game_functions.game_over_flag:
             ship_rocket()
             player_health(lives_num)
             
@@ -107,7 +118,7 @@ def game_loop():
             if player_collision.check_group_collision():    
                 lives_num -= 1
             if lives_num <= 0:
-                game_over_flag = True
+                game_functions.game_over_flag = True
                 player_group.empty()
                 particles_group.empty()
                 player_projectile_group.empty()
@@ -120,7 +131,7 @@ def game_loop():
         window.fill("black")
         window.blit(background, (0, 0))
         
-        if not game_over_flag:
+        if not game_functions.game_over_flag:
             # Display
             player_group.draw(window)
             health_group.draw(window)
